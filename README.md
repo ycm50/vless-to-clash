@@ -1,4 +1,4 @@
-# vless-clash
+# vless-to-clash
 后端.js和index.html应部署在不同的workers/pages下，在部署完后端后，index的action后面的网址改为你的后端的网址，然后压缩这个html，上传部署。
 ![image](https://github.com/user-attachments/assets/a078d95c-ef62-41c2-9d0c-631ab931682d)
 
