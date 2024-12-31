@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog
-import uuid
 import re
 import yaml
 
@@ -37,14 +36,12 @@ def generate_clash_config(vless_urls):
                 path = value
             elif key == 'host':
                 host = value
-        
-        server = server.replace('[', '"').replace(']', '"')
-        print(f"解析成功: Proxy{index + 1}, {{ uuid: {uuid_value}, server: {server}, port: {port}, sni: {sni}, path: {path}, host: {host} }}")
-
+        server=f"{server.replace('[', '').replace(']', '')}"
+        server = f'"{server}"'
         proxies.append({
             'name': f'Proxy{index + 1}',
             'type': 'vless',
-            'server': server,
+            'server':server,
             'port': int(port),  # 确保port是数字
             'uuid': uuid_value,
             'encryption': 'none',
@@ -60,17 +57,28 @@ def generate_clash_config(vless_urls):
             'skip-cert-verify': True
         })
     
+        
     return {
         'proxies': proxies,
         'proxy-groups': [],
         'rules': []
     }
 
+import yaml
+
 def to_yaml(obj):
-    return yaml.dump(obj, allow_unicode=True, default_flow_style=False, sort_keys=False)
+    # 使用 yaml.dump 生成 YAML 格式
+    yaml_str = yaml.dump(obj, allow_unicode=True, default_flow_style=False, sort_keys=False, indent=2)
+    
+    # 替换所有单引号（'）为空
+    yaml_str = yaml_str.replace("'", "")
+    
+    # 返回生成的 YAML 字符串
+    return yaml_str
 
 def save_file(content):
-    filepath = filedialog.asksaveasfilename(defaultextension=".yaml", filetypes=[("YAML files", "*.yaml")])
+    # 默认文件名为 "clash.yaml"
+    filepath = filedialog.asksaveasfilename(defaultextension=".yaml", initialfile="clash.yaml", filetypes=[("YAML files", "*.yaml")])
     if filepath:
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(content)
